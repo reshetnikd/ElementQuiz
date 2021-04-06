@@ -19,7 +19,8 @@ enum State {
 }
 
 class ViewController: UIViewController, UITextFieldDelegate {
-    let elementList = ["Carbon", "Gold", "Chlorine", "Sodium"]
+    let fixedElementList = ["Carbon", "Gold", "Chlorine", "Sodium"]
+    var elementList = [String]()
     var currentElementIndex = 0
     var state: State = .question
     var mode: Mode = .flashCard {
@@ -78,7 +79,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        updateUI()
+        mode = .flashCard
     }
 
     // Updates the app's UI in flash card mode.
@@ -216,6 +217,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     func setupFlashCards() {
         state = .question
         currentElementIndex = 0
+        elementList = fixedElementList
     }
     
     // Sets up a new quiz.
@@ -224,6 +226,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         currentElementIndex = 0
         answerIsCorrect = false
         correctAnswerCount = 0
+        elementList = fixedElementList.shuffled()
     }
 }
 
