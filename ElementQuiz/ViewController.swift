@@ -14,6 +14,19 @@ class ViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var answerLabel: UILabel!
     
+    @IBAction func showAnswer(_ sender: UIButton) {
+        answerLabel.text = elementList[currentElementIndex]
+    }
+    
+    @IBAction func next(_ sender: UIButton) {
+        currentElementIndex += 1
+        
+        if currentElementIndex >= elementList.count {
+            currentElementIndex = 0
+        }
+        updateElement()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
