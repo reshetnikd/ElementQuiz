@@ -20,8 +20,12 @@ enum State {
 class ViewController: UIViewController, UITextFieldDelegate {
     let elementList = ["Carbon", "Gold", "Chlorine", "Sodium"]
     var currentElementIndex = 0
-    var mode: Mode = .flashCard
     var state: State = .question
+    var mode: Mode = .flashCard {
+        didSet {
+            updateUI()
+        }
+    }
     
     // Quiz-specific state
     var answerIsCorrect = false
@@ -47,6 +51,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
         updateUI()
     }
     
+    @IBAction func switchModes(_ sender: UISegmentedControl) {
+        if modeSelector.selectedSegmentIndex == 0 {
+            mode = .flashCard
+        } else {
+            mode = .quiz
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -54,12 +66,12 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
 
     // Updates the app's UI in flash card mode.
-    func updateFlachCardUI() {
-        let elementName = elementList[currentElementIndex]
-        let image = UIImage(named: elementName)
+    func updateFlachCardUI(elementName: String) {
+        // Text field and keyboard
+        textField.isHidden = true
+        textField.resignFirstResponder()
         
-        imageView.image = image
-        
+        // Answer label
         if state == .answer {
             answerLabel.text = elementName
         } else {
@@ -68,7 +80,19 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     // Updates the app's UI in quiz mode.
-    func updateQuizUI() {
+    func updateQuizUI(elementName: String) {
+        // Text field and keyboard
+        textField.isHidden = false
+        
+        switch state {
+            case .question:
+                textField.text = ""
+                textField.becomeFirstResponder()
+            case .answer:
+                textField.resignFirstResponder()
+        }
+        
+        // Answer label
         switch state {
             case .question:
                 answerLabel.text = ""
@@ -83,11 +107,18 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     // Updates the app's UI based on its mode and state.
     func updateUI() {
+        // Shared code: updating the image
+        let elementName = elementList[currentElementIndex]
+        let image = UIImage(named: elementName)
+        
+        imageView.image = image
+        
+        // Mode-specific UI updates are split into two methods for readability
         switch mode {
             case .flashCard:
-                updateFlachCardUI()
+                updateFlachCardUI(elementName: elementName)
             case .quiz:
-                updateQuizUI()
+                updateQuizUI(elementName: elementName)
         }
     }
     
